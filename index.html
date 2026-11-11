@@ -1,0 +1,705 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<style>:root{color-scheme:light}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+<title>Portafolio de Redes</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Space+Grotesk:wght@500;700&display=swap">
+<style>
+/* Concepto: bitácora de laboratorio de redes. Papel cuadriculado tipo diagrama,
+   etiquetas en monoespaciada como en una consola, un solo acento verde azulado
+   y un ámbar de "LED de enlace" para lo pendiente de completar. */
+:root {
+  --bg: #eef3f4;
+  --bg-elev: #fbfdfd;
+  --ink: #0d1b21;
+  --ink-2: #4a5f68;
+  --line: #cfdadd;
+  --grid: rgba(13, 27, 33, 0.055);
+  --accent: #0b7a75;
+  --accent-ink: #ffffff;
+  --signal: #a84d06;
+  --code-bg: #0f1f25;
+  --code-ink: #cdeee6;
+  --code-dim: #6f8f97;
+  --code-prompt: #f2a93b;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'IBM Plex Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0a1215;
+    --bg-elev: #111d22;
+    --ink: #e4f0f1;
+    --ink-2: #8fa7ad;
+    --line: #223940;
+    --grid: rgba(228, 240, 241, 0.05);
+    --accent: #38d3b8;
+    --accent-ink: #04201c;
+    --signal: #f2a93b;
+    --code-bg: #060d10;
+    --code-ink: #bfe9df;
+    --code-dim: #5f7d85;
+    --code-prompt: #f2a93b;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0a1215;
+  --bg-elev: #111d22;
+  --ink: #e4f0f1;
+  --ink-2: #8fa7ad;
+  --line: #223940;
+  --grid: rgba(228, 240, 241, 0.05);
+  --accent: #38d3b8;
+  --accent-ink: #04201c;
+  --signal: #f2a93b;
+  --code-bg: #060d10;
+  --code-ink: #bfe9df;
+  --code-dim: #5f7d85;
+  --code-prompt: #f2a93b;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100%;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  z-index: 30;
+  background: var(--bg-elev);
+}
+a { color: var(--accent); }
+h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; margin: 0; letter-spacing: -0.015em; }
+p { margin: 0; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+
+.wrap {
+  max-width: 1120px;
+  margin: 0 auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.mono { font-family: var(--font-mono); }
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--signal);
+  font-weight: 500;
+}
+
+/* Cabecera */
+.site-header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 20;
+  background: var(--bg-elev);
+  border-bottom: 1px solid var(--line);
+}
+.bar { display: flex; align-items: center; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; padding-block: 8px; min-height: 56px; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; font-family: var(--font-display); font-weight: 700; font-size: 1.05rem; }
+.brand .glyph { font-family: var(--font-mono); font-weight: 500; color: var(--accent); background: var(--bg); border: 1px solid var(--line); border-radius: 4px; padding: 1px 7px; font-size: 0.85rem; }
+.nav { display: flex; gap: 4px; }
+.nav a { color: var(--ink-2); text-decoration: none; font-weight: 500; font-size: 0.95rem; padding: 8px 14px; border-bottom: 2px solid transparent; }
+.nav a:hover { color: var(--ink); }
+.nav a[aria-current="page"] { color: var(--ink); border-bottom-color: var(--accent); }
+
+main { display: block; outline: none; }
+.pad { padding-block: 40px 72px; }
+
+/* Botones */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 18px; border-radius: 6px; border: 1px solid var(--accent);
+  background: var(--accent); color: var(--accent-ink);
+  font: 600 0.95rem var(--font-body); text-decoration: none; cursor: pointer;
+}
+.btn:hover { filter: brightness(1.08); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.btn.ghost:hover { background: var(--bg-elev); filter: none; }
+
+/* Inicio */
+.hero-band { background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 32px 32px; border-bottom: 1px solid var(--line); }
+.hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 40px; align-items: center; padding-block: 56px; }
+.hero h1 { font-size: clamp(2.1rem, 5.4vw, 3.6rem); font-weight: 700; margin-top: 12px; }
+.hero .lead { margin-top: 20px; color: var(--ink-2); max-width: 56ch; font-size: 1.05rem; }
+.hero .cta { margin-top: 28px; display: flex; gap: 12px; flex-wrap: wrap; }
+.ficha { margin-top: 32px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 6px; max-width: 520px; }
+.ficha-head { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-2); padding: 8px 16px; border-bottom: 1px solid var(--line); }
+.ficha dl { margin: 0; padding: 12px 16px 14px; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 20px; }
+.ficha dt { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-2); padding-top: 3px; }
+.ficha dd { margin: 0; font-weight: 500; overflow-wrap: anywhere; }
+.pendiente { color: var(--signal); font-family: var(--font-mono); font-weight: 400; font-size: 0.9rem; }
+.topo { width: 100%; height: auto; max-width: 100%; display: block; }
+.topo .ln { stroke: var(--ink-2); stroke-width: 1.5; fill: none; }
+.topo .pulse { stroke: var(--accent); stroke-width: 2; stroke-dasharray: 6 6; animation: flow 1.2s linear infinite; fill: none; }
+.topo .nd { fill: var(--bg-elev); stroke: var(--accent); stroke-width: 1.75; }
+.topo .nl { fill: var(--ink); font-family: var(--font-mono); font-size: 12px; font-weight: 500; text-anchor: middle; }
+.topo .net { fill: var(--ink-2); font-family: var(--font-mono); font-size: 10.5px; text-anchor: middle; }
+@keyframes flow { to { stroke-dashoffset: -12; } }
+
+.section { padding-block: 56px 0; }
+.section h2 { font-size: clamp(1.4rem, 3vw, 1.9rem); margin-top: 8px; }
+.split { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 40px; }
+.prose p + p { margin-top: 14px; }
+.prose { max-width: 62ch; color: var(--ink-2); }
+.prose strong { color: var(--ink); font-weight: 600; }
+.mapa { margin-top: 24px; border-bottom: 1px solid var(--line); }
+.mapa a { display: grid; grid-template-columns: 7.5rem minmax(0, 1fr) auto; gap: 16px; align-items: baseline; padding: 14px 4px; border-top: 1px solid var(--line); color: var(--ink); text-decoration: none; }
+.mapa a:hover { background: var(--bg-elev); }
+.mapa .u { font-family: var(--font-mono); font-size: 0.8rem; color: var(--signal); }
+.mapa .t { font-weight: 500; }
+.mapa .t small { display: block; font-weight: 400; color: var(--ink-2); font-size: 0.88rem; }
+.mapa .go { color: var(--accent); font-family: var(--font-mono); }
+
+/* Lista de trabajos */
+.page-head { display: grid; gap: 10px; }
+.page-head h1 { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.page-head p { color: var(--ink-2); max-width: 60ch; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 28px; align-items: center; }
+.chip { display: inline-block; text-decoration: none; font: 500 0.85rem var(--font-mono); padding: 8px 14px; border-radius: 4px; border: 1px solid var(--line); background: var(--bg-elev); color: var(--ink-2); }
+.chip:hover { color: var(--ink); border-color: var(--ink-2); }
+.chip[aria-current="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.cat { margin-top: 40px; }
+.cat-head { display: flex; align-items: baseline; justify-content: space-between; gap: 6px 20px; flex-wrap: wrap; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+.cat-head h2 { font-size: 1.5rem; }
+.cat-head p { color: var(--ink-2); font-size: 0.9rem; }
+.grid { margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); gap: 20px; }
+.card { display: flex; flex-direction: column; gap: 12px; padding: 22px; background: var(--bg-elev); border: 1px solid var(--line); border-radius: 6px; min-width: 0; }
+.card:hover { border-color: var(--accent); }
+.card.plantilla { background: transparent; border: 1.5px dashed var(--ink-2); }
+.card.plantilla:hover { border-color: var(--accent); }
+.card h3 { font-size: 1.3rem; }
+.card .desc { flex: 1; color: var(--ink-2); font-size: 0.95rem; }
+.card .btn { align-self: flex-start; margin-top: 4px; }
+.tags { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; margin: 0; padding: 0; }
+.tag { font: 500 0.72rem var(--font-mono); padding: 3px 8px; border: 1px solid var(--line); border-radius: 4px; color: var(--ink-2); }
+
+/* Detalle */
+.back { display: inline-flex; gap: 8px; font: 500 0.85rem var(--font-mono); text-decoration: none; }
+.back:hover { text-decoration: underline; }
+.detail-head { margin-top: 24px; display: grid; gap: 12px; max-width: 800px; }
+.detail-head h1 { font-size: clamp(1.9rem, 4.6vw, 3rem); }
+.detail-head .lead { color: var(--ink-2); font-size: 1.05rem; }
+.detail-grid { margin-top: 40px; display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: 56px; align-items: start; }
+.detail-main { min-width: 0; display: grid; gap: 44px; max-width: 760px; }
+.detail-main h2 { font-size: 1.45rem; margin-bottom: 14px; }
+.detail-main h3 { font-size: 1.05rem; margin-bottom: 10px; }
+.detail-main p { color: var(--ink-2); }
+.detail-main p + p { margin-top: 12px; }
+.detail-main ol { margin: 16px 0 0; padding-left: 1.4em; display: grid; gap: 8px; color: var(--ink-2); }
+.detail-main ol li::marker { font-family: var(--font-mono); color: var(--accent); }
+.detail-main ol strong { color: var(--ink); font-weight: 600; }
+.aside { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 80px); background: var(--bg-elev); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: grid; gap: 14px; font-size: 0.92rem; }
+.aside .k { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); }
+.aside .v { margin-top: 3px; }
+.aside .ex { padding-top: 14px; border-top: 1px solid var(--line); color: var(--ink-2); font-size: 0.85rem; }
+
+.code { background: var(--code-bg); color: var(--code-ink); border-radius: 6px; overflow: hidden; border: 1px solid var(--line); }
+.code-head { font: 500 0.72rem var(--font-mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--code-dim); padding: 8px 16px; border-bottom: 1px solid rgba(143, 167, 173, 0.2); }
+.code pre { margin: 0; padding: 16px; overflow-x: auto; font: 400 0.85rem/1.65 var(--font-mono); white-space: pre; }
+.code .p { color: var(--code-prompt); }
+.code .c { color: var(--code-dim); }
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-elev); }
+.table-wrap table { border-collapse: collapse; width: 100%; min-width: 520px; font-variant-numeric: tabular-nums; }
+.table-wrap th { text-align: left; font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.table-wrap td { padding: 10px 14px; border-top: 1px solid var(--line); font: 400 0.88rem var(--font-mono); color: var(--ink); white-space: nowrap; }
+.table-wrap tr:first-child td { border-top: 0; }
+.shots { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 280px), 1fr)); gap: 18px; }
+.shot { margin: 0; min-width: 0; }
+.shot img { display: block; max-width: 100%; border-radius: 6px; border: 1px solid var(--line); }
+.ph { aspect-ratio: 16 / 10; max-width: 100%; border: 1.5px dashed var(--ink-2); border-radius: 6px; display: grid; place-content: center; justify-items: center; gap: 8px; text-align: center; padding: 16px; color: var(--ink-2); background: var(--bg-elev); }
+.ph svg { width: 34px; height: 34px; }
+.ph .pt { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--signal); }
+.ph .pn { font-size: 0.85rem; max-width: 30ch; }
+.shot figcaption { margin-top: 8px; font-size: 0.88rem; color: var(--ink-2); }
+.concl { padding: 20px 22px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; background: var(--bg-elev); }
+.pager { margin-top: 56px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.pager a { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-elev); text-decoration: none; color: var(--ink); }
+.pager a:hover { border-color: var(--accent); }
+.pager .k { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-2); }
+.pager .next { text-align: right; }
+.pager .gap { visibility: hidden; }
+
+.site-footer { border-top: 1px solid var(--line); color: var(--ink-2); font-size: 0.85rem; }
+.site-footer .wrap { padding-block: 24px; display: flex; justify-content: space-between; gap: 8px 24px; flex-wrap: wrap; }
+
+@media (max-width: 900px) {
+  .hero { grid-template-columns: minmax(0, 1fr); padding-block: 40px; gap: 28px; }
+  .split { grid-template-columns: minmax(0, 1fr); gap: 20px; }
+  .detail-grid { grid-template-columns: minmax(0, 1fr); gap: 32px; }
+  .aside { position: static; order: -1; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .aside .ex { grid-column: 1 / -1; }
+}
+@media (max-width: 520px) {
+  .mapa a { grid-template-columns: minmax(0, 1fr) auto; }
+  .mapa .u { grid-column: 1 / -1; }
+  .pager { grid-template-columns: minmax(0, 1fr); }
+  .pager .gap { display: none; }
+  .pager .next { text-align: left; }
+  .ficha dl { grid-template-columns: minmax(0, 1fr); gap: 0; }
+  .ficha dd { margin-bottom: 8px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; scroll-behavior: auto !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="#inicio"><span class="glyph" aria-hidden="true">&gt;_</span> Redes · Portafolio</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#inicio" data-nav="inicio">Inicio</a>
+      <a href="#trabajos" data-nav="trabajos">Trabajos</a>
+    </nav>
+  </div>
+</header>
+
+<main id="app" tabindex="-1"></main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <span>Portafolio de Evidencias · Redes</span>
+    <span id="footer-nombre"></span>
+  </div>
+</footer>
+
+<script>
+(function () {
+  /* ============================================================
+     1. TUS DATOS: cambia estos textos por los tuyos.
+     ============================================================ */
+  var PERFIL = {
+    nombre: "[Raúl Contrera Verdin]",
+    carrera: "[Desarrollo de software Multiplataforma]",
+    semestre: "[4.º cuatrimestre]",
+    materia: "Redes"
+  };
+
+  /* ============================================================
+     2. TUS TRABAJOS: cada objeto es una tarjeta y una página de detalle.
+     - id: sin espacios ni acentos (se usa en la dirección #id).
+     - categoria: "cisco" (Cisco Packet Tracer) o "clase" (Trabajos de clase).
+     - Las tarjetas con plantilla(...) son espacios vacíos: para usar uno,
+       cambia sus textos o reemplaza la línea por un objeto completo.
+       Para agregar otro espacio, copia una línea plantilla(...) y cambia su id.
+     - bloques: tipo "codigo" (texto) o "tabla" (cabeceras + filas).
+     - capturas: agrega src: "https://..." o una imagen data: para
+       mostrar tu captura real en lugar del marcador de posición.
+     ============================================================ */
+  var CATEGORIAS = [
+    { id: "cisco", nombre: "Cisco Packet Tracer", desc: "Prácticas y simulaciones de redes con Cisco Packet Tracer" },
+    { id: "clase", nombre: "Trabajos de clase", desc: "Tareas, reportes, investigaciones y ejercicios de la clase" }
+  ];
+
+  /* Espacio vacío listo para llenar: solo cambia los textos. */
+  function plantilla(id, categoria, unidad) {
+    var esCisco = categoria === "cisco";
+    return {
+      id: id,
+      categoria: categoria,
+      plantilla: true,
+      unidad: unidad || "Unidad X",
+      modulo: "Tema del trabajo",
+      titulo: esCisco ? "Práctica de Cisco (por subir)" : "Trabajo de clase (por subir)",
+      descripcion: "Escribe aquí una descripción breve de lo que hiciste en este trabajo.",
+      etiquetas: ["Etiqueta 1", "Etiqueta 2"],
+      fecha: "[Fecha de entrega]",
+      herramientas: [esCisco ? "Cisco Packet Tracer" : "[Herramienta]"],
+      objetivo: "Escribe aquí el objetivo del trabajo.",
+      desarrollo: ["Explica aquí cómo realizaste el trabajo, paso a paso."],
+      pasos: ["<strong>Paso 1.</strong> Describe el primer paso.", "<strong>Paso 2.</strong> Describe el segundo paso."],
+      bloques: esCisco ? [{ tipo: "codigo", titulo: "Configuración o comandos", etiqueta: "Dispositivo · Cisco IOS", texto: "Router(config)# pega aquí tus comandos" }] : [],
+      capturas: [
+        { titulo: "Título de la captura 1", nota: "Aquí va tu captura de pantalla." },
+        { titulo: "Título de la captura 2", nota: "Aquí va tu captura de pantalla." }
+      ],
+      conclusiones: ["Escribe aquí tus conclusiones."]
+    };
+  }
+
+  var TRABAJOS = [
+    {
+      id: "subneteo-ip",
+      categoria: "clase",
+      unidad: "Unidad 2",
+      modulo: "Direccionamiento IPv4",
+      titulo: "Práctica de Subneteo IP",
+      descripcion: "División de la red 192.168.10.0/24 en cuatro subredes de al menos 50 hosts, con su tabla de direcciones y validación en Packet Tracer.",
+      etiquetas: ["Subneteo", "IPv4", "Direccionamiento"],
+      fecha: "15 sep 2026",
+      herramientas: ["Packet Tracer", "Calculadora IP"],
+      objetivo: "Dividir un bloque /24 en subredes del mismo tamaño y calcular para cada una la máscara, el rango de hosts utilizables y la dirección de broadcast, de modo que cada departamento tenga su propia red.",
+      desarrollo: [
+        "Se parte de la red 192.168.10.0/24 y se piden 4 subredes con al menos 50 hosts cada una. Para alojar 50 hosts hacen falta 6 bits de host (2⁶ − 2 = 62), así que se toman 2 bits prestados del último octeto y la máscara pasa de /24 a /26.",
+        "Con la máscara 255.255.255.192 el salto entre subredes es de 64 direcciones. Cada subred conserva 62 direcciones utilizables, una para la red y otra para el broadcast."
+      ],
+      pasos: [
+        "<strong>Requerimientos.</strong> 4 subredes, mínimo 50 hosts por subred.",
+        "<strong>Bits de host.</strong> 6 bits de host dan 62 direcciones utilizables.",
+        "<strong>Bits prestados.</strong> 26 − 24 = 2 bits, que dan 2² = 4 subredes.",
+        "<strong>Salto.</strong> 256 − 192 = 64, así que las redes empiezan en 0, 64, 128 y 192.",
+        "<strong>Verificación.</strong> Se configuran dos equipos por subred en Packet Tracer y se prueba conectividad con ping."
+      ],
+      bloques: [
+        { tipo: "codigo", titulo: "Cálculo", etiqueta: "Hoja de cálculo",
+          texto: "Hosts necesarios ......... 50  ->  2^6 - 2 = 62\nBits prestados ........... 26 - 24 = 2  ->  2^2 = 4 subredes\nMáscara .................. /26 = 255.255.255.192\nSalto .................... 256 - 192 = 64" },
+        { tipo: "tabla", titulo: "Tabla de subredes",
+          cabeceras: ["Subred", "Dirección de red", "Rango de hosts", "Broadcast"],
+          filas: [
+            ["Subred 1", "192.168.10.0/26", "192.168.10.1 – 192.168.10.62", "192.168.10.63"],
+            ["Subred 2", "192.168.10.64/26", "192.168.10.65 – 192.168.10.126", "192.168.10.127"],
+            ["Subred 3", "192.168.10.128/26", "192.168.10.129 – 192.168.10.190", "192.168.10.191"],
+            ["Subred 4", "192.168.10.192/26", "192.168.10.193 – 192.168.10.254", "192.168.10.255"]
+          ] }
+      ],
+      capturas: [
+        { titulo: "Topología con las cuatro subredes", nota: "Captura del área de trabajo de Packet Tracer con los equipos conectados." },
+        { titulo: "Prueba de conectividad con ping", nota: "Captura de la terminal de un PC con respuestas exitosas." }
+      ],
+      conclusiones: [
+        "El subneteo permite aprovechar un bloque de direcciones y separar departamentos sin pedir más espacio. Calcular primero los bits de host evitó desperdiciar direcciones.",
+        "El error más común fue olvidar restar las direcciones de red y de broadcast al contar hosts. Armar la tabla completa ayudó a detectarlo antes de configurar."
+      ]
+    },
+    {
+      id: "enrutamiento-estatico",
+      categoria: "cisco",
+      unidad: "Unidad 3",
+      modulo: "Enrutamiento",
+      titulo: "Configuración de Enrutamiento Estático",
+      descripcion: "Conexión de dos redes LAN con dos routers Cisco mediante rutas estáticas, verificada con show ip route y pruebas de ping.",
+      etiquetas: ["Enrutamiento", "Cisco", "CLI"],
+      fecha: "6 oct 2026",
+      herramientas: ["Packet Tracer", "Cisco IOS"],
+      objetivo: "Lograr que PC1 (192.168.10.10) y PC2 (192.168.20.10) se comuniquen a través de dos routers, configurando manualmente una ruta estática en cada uno hacia la LAN remota.",
+      desarrollo: [
+        "Los routers R1 y R2 se unen con un enlace punto a punto 10.0.0.0/30. Cada router solo conoce sus redes conectadas, por lo que sin rutas estáticas el ping entre las LAN falla con 'Destination host unreachable'.",
+        "En R1 se agrega una ruta hacia 192.168.20.0/24 con siguiente salto 10.0.0.2, y en R2 la ruta inversa hacia 192.168.10.0/24 con siguiente salto 10.0.0.1."
+      ],
+      pasos: [
+        "<strong>Direccionamiento.</strong> Asignar IP a cada interfaz de los dos routers.",
+        "<strong>Activación.</strong> Ejecutar no shutdown en las interfaces utilizadas.",
+        "<strong>Rutas estáticas.</strong> Una por router hacia la LAN del otro extremo.",
+        "<strong>Revisión.</strong> Confirmar con show ip route que aparecen las rutas marcadas con S.",
+        "<strong>Prueba.</strong> Hacer ping de extremo a extremo."
+      ],
+      bloques: [
+        { tipo: "codigo", titulo: "Configuración de R1", etiqueta: "R1 · Cisco IOS",
+          texto: "R1(config)# interface g0/0\nR1(config-if)# ip address 192.168.10.1 255.255.255.0\nR1(config-if)# no shutdown\nR1(config-if)# exit\nR1(config)# interface g0/1\nR1(config-if)# ip address 10.0.0.1 255.255.255.252\nR1(config-if)# no shutdown\nR1(config-if)# exit\nR1(config)# ip route 192.168.20.0 255.255.255.0 10.0.0.2" },
+        { tipo: "codigo", titulo: "Configuración de R2", etiqueta: "R2 · Cisco IOS",
+          texto: "R2(config)# interface g0/0\nR2(config-if)# ip address 192.168.20.1 255.255.255.0\nR2(config-if)# no shutdown\nR2(config-if)# exit\nR2(config)# interface g0/1\nR2(config-if)# ip address 10.0.0.2 255.255.255.252\nR2(config-if)# no shutdown\nR2(config-if)# exit\nR2(config)# ip route 192.168.10.0 255.255.255.0 10.0.0.1" },
+        { tipo: "codigo", titulo: "Verificación", etiqueta: "R1 · Salida resumida",
+          texto: "R1# show ip route static\nS    192.168.20.0/24 [1/0] via 10.0.0.2\n\nR1# ping 192.168.20.10\n!!!!!\nSuccess rate is 100 percent (5/5)" }
+      ],
+      capturas: [
+        { titulo: "Topología de los dos routers", nota: "Captura con las interfaces y las redes rotuladas." },
+        { titulo: "Tabla de enrutamiento de R1", nota: "Captura de show ip route donde se ve la ruta S." },
+        { titulo: "Ping de PC1 a PC2", nota: "Captura de la terminal con respuestas exitosas." }
+      ],
+      conclusiones: [
+        "Las rutas estáticas son simples y predecibles, pero cada cambio de topología exige editar los routers a mano. Funcionan bien en redes pequeñas con pocos destinos.",
+        "Para que haya comunicación en ambos sentidos, la ruta de regreso es tan necesaria como la de ida. Ese fue el origen de mi primer ping fallido."
+      ]
+    },
+    {
+      id: "vlan-packet-tracer",
+      categoria: "cisco",
+      unidad: "Unidad 4",
+      modulo: "Conmutación y VLAN",
+      titulo: "Simulación de Red en Packet Tracer",
+      descripcion: "Red departamental con dos VLAN, enlace troncal 802.1Q y router-on-a-stick, construida y probada en Packet Tracer.",
+      etiquetas: ["Packet Tracer", "VLAN", "Switching"],
+      fecha: "27 oct 2026",
+      herramientas: ["Cisco Packet Tracer"],
+      objetivo: "Simular una red con dos departamentos aislados en VLAN distintas (Ventas y Administración) que pueden comunicarse entre sí únicamente a través de un router.",
+      desarrollo: [
+        "El switch SW1 define la VLAN 10 (VENTAS) y la VLAN 20 (ADMIN). Los puertos Fa0/1 y Fa0/2 se configuran como acceso, cada uno en su VLAN, y el puerto Gi0/1 se configura como troncal hacia el router.",
+        "En el router se crean dos subinterfaces en Gi0/0, una por VLAN, con encapsulación 802.1Q. Cada subinterfaz es la puerta de enlace de su red."
+      ],
+      pasos: [
+        "<strong>VLAN.</strong> Crear la VLAN 10 y la VLAN 20 con nombre.",
+        "<strong>Puertos de acceso.</strong> Asignar Fa0/1 a la VLAN 10 y Fa0/2 a la VLAN 20.",
+        "<strong>Troncal.</strong> Configurar Gi0/1 en modo trunk hacia el router.",
+        "<strong>Subinterfaces.</strong> Crear Gi0/0.10 y Gi0/0.20 con encapsulation dot1Q.",
+        "<strong>Pruebas.</strong> Ping dentro de cada VLAN y entre VLAN."
+      ],
+      bloques: [
+        { tipo: "tabla", titulo: "Plan de VLAN",
+          cabeceras: ["VLAN", "Nombre", "Red", "Puerto", "Gateway"],
+          filas: [
+            ["10", "VENTAS", "192.168.10.0/24", "Fa0/1", "192.168.10.1"],
+            ["20", "ADMIN", "192.168.20.0/24", "Fa0/2", "192.168.20.1"]
+          ] },
+        { tipo: "codigo", titulo: "Configuración del switch", etiqueta: "SW1 · Cisco IOS",
+          texto: "SW1(config)# vlan 10\nSW1(config-vlan)# name VENTAS\nSW1(config-vlan)# vlan 20\nSW1(config-vlan)# name ADMIN\nSW1(config-vlan)# exit\nSW1(config)# interface f0/1\nSW1(config-if)# switchport mode access\nSW1(config-if)# switchport access vlan 10\nSW1(config-if)# interface f0/2\nSW1(config-if)# switchport mode access\nSW1(config-if)# switchport access vlan 20\nSW1(config-if)# interface g0/1\nSW1(config-if)# switchport mode trunk" },
+        { tipo: "codigo", titulo: "Subinterfaces del router", etiqueta: "R1 · Cisco IOS",
+          texto: "R1(config)# interface g0/0\nR1(config-if)# no shutdown\nR1(config-if)# interface g0/0.10\nR1(config-subif)# encapsulation dot1Q 10\nR1(config-subif)# ip address 192.168.10.1 255.255.255.0\nR1(config-subif)# interface g0/0.20\nR1(config-subif)# encapsulation dot1Q 20\nR1(config-subif)# ip address 192.168.20.1 255.255.255.0" }
+      ],
+      capturas: [
+        { titulo: "Topología completa en Packet Tracer", nota: "Captura con el switch, el router y los PC de cada VLAN." },
+        { titulo: "Salida de show vlan brief", nota: "Captura donde se ven las VLAN 10 y 20 con sus puertos." }
+      ],
+      conclusiones: [
+        "Las VLAN separan el tráfico de cada departamento aunque compartan el mismo switch físico. El router-on-a-stick permite el paso entre VLAN con un solo cable.",
+        "Olvidar configurar el puerto como troncal dejó incomunicadas a las dos VLAN. Revisar con show interfaces trunk fue la forma más rápida de encontrarlo."
+      ]
+    },
+
+    /* ---- Espacios vacíos: Cisco Packet Tracer ---- */
+    plantilla("cisco-nuevo-1", "cisco", "Unidad 5"),
+    plantilla("cisco-nuevo-2", "cisco", "Unidad 5"),
+
+    /* ---- Espacios vacíos: Trabajos de clase ---- */
+    plantilla("clase-nuevo-1", "clase", "Unidad 3"),
+    plantilla("clase-nuevo-2", "clase", "Unidad 4")
+  ];
+
+  /* ============================================================
+     3. LÓGICA DE LA PÁGINA
+     ============================================================ */
+  var app = document.getElementById("app");
+  var filtro = "todos";
+
+  function esc(s) {
+    return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function tagsHTML(list) {
+    return '<ul class="tags">' + list.map(function (t) { return '<li class="tag">' + esc(t) + "</li>"; }).join("") + "</ul>";
+  }
+
+  /* --- Inicio --- */
+  function topologiaSVG() {
+    return '<svg class="topo" viewBox="0 0 430 220" role="img" aria-label="Diagrama de red: dos PC conectados a un switch, que se conecta a dos routers en serie">' +
+      '<path class="ln" d="M44 50 L136 110"/><path class="ln" d="M44 170 L136 110"/><path class="ln" d="M136 110 L230 110"/>' +
+      '<path class="pulse" d="M230 110 L380 110"/>' +
+      '<rect class="nd" x="16" y="33" width="56" height="34" rx="5"/><text class="nl" x="44" y="55">PC1</text>' +
+      '<rect class="nd" x="16" y="153" width="56" height="34" rx="5"/><text class="nl" x="44" y="175">PC2</text>' +
+      '<rect class="nd" x="108" y="93" width="56" height="34" rx="5"/><text class="nl" x="136" y="115">SW1</text>' +
+      '<rect class="nd" x="202" y="93" width="56" height="34" rx="5"/><text class="nl" x="230" y="115">R1</text>' +
+      '<rect class="nd" x="352" y="93" width="56" height="34" rx="5"/><text class="nl" x="380" y="115">R2</text>' +
+      '<text class="net" x="305" y="98">10.0.0.0/30</text>' +
+      '<text class="net" x="136" y="150">192.168.10.0/24</text>' +
+      '<text class="net" x="380" y="150">192.168.20.0/24</text>' +
+      "</svg>";
+  }
+
+  function renderHome() {
+    var mapa = CATEGORIAS.map(function (c) {
+      var n = TRABAJOS.filter(function (t) { return t.categoria === c.id && !t.plantilla; }).length;
+      return '<a href="#trabajos-' + c.id + '"><span class="u">' + n + (n === 1 ? " evidencia" : " evidencias") + '</span><span class="t">' + esc(c.nombre) +
+        "<small>" + esc(c.desc) + '</small></span><span class="go" aria-hidden="true">→</span></a>';
+    }).join("");
+
+    app.innerHTML =
+      '<div class="hero-band"><div class="wrap hero">' +
+        "<div>" +
+          '<p class="eyebrow">Bitácora de la materia</p>' +
+          "<h1>Portafolio de Evidencias: Redes</h1>" +
+          '<p class="lead">Aquí guardo las prácticas de Cisco Packet Tracer y los trabajos de clase de la materia de Redes. Cada evidencia incluye el procedimiento, las configuraciones usadas, capturas de pantalla y mis conclusiones.</p>' +
+          '<div class="ficha"><div class="ficha-head">Ficha del estudiante</div><dl>' +
+            '<dt>Nombre</dt><dd data-perfil="nombre"></dd>' +
+            '<dt>Carrera</dt><dd data-perfil="carrera"></dd>' +
+            '<dt>Semestre</dt><dd data-perfil="semestre"></dd>' +
+            '<dt>Materia</dt><dd data-perfil="materia"></dd>' +
+          "</dl></div>" +
+          '<div class="cta"><a class="btn" href="#trabajos">Ver evidencias <span aria-hidden="true">→</span></a></div>' +
+        "</div>" +
+        "<div>" + topologiaSVG() + "</div>" +
+      "</div></div>" +
+      '<div class="wrap"><section class="section split" style="padding-bottom:72px">' +
+        '<div><p class="eyebrow">Propósito</p><h2>Un registro del avance semestre a semestre</h2></div>' +
+        "<div>" +
+          '<div class="prose"><p>Este blog funciona como <strong>archivo de la materia</strong>: cada trabajo queda documentado con lo necesario para revisarlo después, ya sea para estudiar, para una evaluación o para retomar una configuración.</p>' +
+          "<p>Los trabajos se dividen en dos apartados. Elige uno para ver sus evidencias, con objetivo, desarrollo, comandos y conclusiones.</p></div>" +
+          '<nav class="mapa" aria-label="Apartados de trabajos">' + mapa + "</nav>" +
+        "</div>" +
+      "</section></div>";
+    fillPerfil();
+  }
+
+  function fillPerfil() {
+    var nodes = app.querySelectorAll("[data-perfil]");
+    for (var i = 0; i < nodes.length; i++) {
+      var v = PERFIL[nodes[i].getAttribute("data-perfil")] || "";
+      nodes[i].textContent = v;
+      if (v.charAt(0) === "[") nodes[i].classList.add("pendiente");
+    }
+  }
+
+  /* --- Lista de trabajos --- */
+  function cardHTML(t) {
+    return '<article class="card' + (t.plantilla ? " plantilla" : "") + '">' +
+      '<p class="eyebrow">' + esc(t.unidad) + " · " + esc(t.modulo) + "</p>" +
+      "<h3>" + esc(t.titulo) + "</h3>" +
+      '<p class="desc">' + esc(t.descripcion) + "</p>" +
+      tagsHTML(t.etiquetas) +
+      '<a class="btn' + (t.plantilla ? " ghost" : "") + '" href="#' + t.id + '">Ver Evidencia <span aria-hidden="true">→</span></a>' +
+    "</article>";
+  }
+
+  function renderList() {
+    var tabs = [{ id: "todos", nombre: "Todos", hash: "#trabajos" }].concat(CATEGORIAS.map(function (c) {
+      return { id: c.id, nombre: c.nombre, hash: "#trabajos-" + c.id };
+    }));
+    var tabsHTML = tabs.map(function (t) {
+      return '<a class="chip" href="' + t.hash + '" aria-current="' + (t.id === filtro ? "true" : "false") + '">' + esc(t.nombre) + "</a>";
+    }).join("");
+
+    var secciones = CATEGORIAS.filter(function (c) { return filtro === "todos" || filtro === c.id; }).map(function (c) {
+      var lista = TRABAJOS.filter(function (t) { return t.categoria === c.id; });
+      var n = lista.filter(function (t) { return !t.plantilla; }).length;
+      return '<section class="cat" aria-labelledby="cat-' + c.id + '">' +
+        '<div class="cat-head"><h2 id="cat-' + c.id + '">' + esc(c.nombre) + "</h2><p>" + esc(c.desc) + " · " + n + (n === 1 ? " evidencia" : " evidencias") + "</p></div>" +
+        '<div class="grid">' + lista.map(cardHTML).join("") + "</div></section>";
+    }).join("");
+
+    app.innerHTML =
+      '<div class="wrap pad">' +
+        '<div class="page-head"><p class="eyebrow">Evidencias</p><h1>Trabajos de la materia</h1>' +
+        "<p>Dos apartados: las prácticas de Cisco Packet Tracer y los trabajos de clase. Las tarjetas con borde punteado son espacios libres para tu próximo trabajo.</p></div>" +
+        '<nav class="filters" aria-label="Apartados de trabajos">' + tabsHTML + "</nav>" +
+        secciones +
+      "</div>";
+  }
+
+  /* --- Detalle --- */
+  function resaltarLinea(linea) {
+    var e = esc(linea);
+    if (/^\s*!/.test(linea)) return '<span class="c">' + e + "</span>";
+    var m = /^([\w-]+(?:\([\w-]+\))?#)(\s.*)?$/.exec(linea);
+    if (m) return '<span class="p">' + esc(m[1]) + "</span>" + esc(m[2] || "");
+    return e;
+  }
+
+  function bloqueHTML(b) {
+    var cuerpo = "";
+    if (b.tipo === "codigo") {
+      cuerpo = '<div class="code"><div class="code-head">' + esc(b.etiqueta || "Consola") + "</div><pre><code>" +
+        b.texto.split("\n").map(resaltarLinea).join("\n") + "</code></pre></div>";
+    } else if (b.tipo === "tabla") {
+      cuerpo = '<div class="table-wrap"><table><thead><tr>' +
+        b.cabeceras.map(function (c) { return "<th>" + esc(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+        b.filas.map(function (f) { return "<tr>" + f.map(function (c) { return "<td>" + esc(c) + "</td>"; }).join("") + "</tr>"; }).join("") +
+        "</tbody></table></div>";
+    }
+    return "<div><h3>" + esc(b.titulo) + "</h3>" + cuerpo + "</div>";
+  }
+
+  var ICONO_IMG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none"/><circle cx="8.5" cy="9.5" r="1.5" fill="none"/><path d="M21 16l-5-5-8 9" fill="none"/></svg>';
+
+  function capturaHTML(c, i) {
+    var fig = c.src
+      ? '<img src="' + esc(c.src) + '" alt="' + esc(c.titulo) + '">'
+      : '<div class="ph" role="img" aria-label="Marcador de posición para la captura ' + (i + 1) + '">' + ICONO_IMG +
+        '<span class="pt">Captura ' + (i + 1) + '</span><span class="pn">' + esc(c.nota) + "</span></div>";
+    return '<figure class="shot">' + fig + "<figcaption>" + esc(c.titulo) + "</figcaption></figure>";
+  }
+
+  function renderDetail(t) {
+    var cat = CATEGORIAS.filter(function (c) { return c.id === t.categoria; })[0] || CATEGORIAS[0];
+    var hermanos = TRABAJOS.filter(function (x) { return x.categoria === t.categoria; });
+    var idx = hermanos.indexOf(t);
+    var prev = hermanos[idx - 1], next = hermanos[idx + 1];
+    var pager =
+      (prev ? '<a href="#' + prev.id + '"><span class="k">← Anterior</span><span>' + esc(prev.titulo) + "</span></a>" : '<span class="gap"></span>') +
+      (next ? '<a class="next" href="#' + next.id + '"><span class="k">Siguiente →</span><span>' + esc(next.titulo) + "</span></a>" : "");
+    var nota = t.plantilla
+      ? "Espacio libre. Edita estos textos en la lista TRABAJOS del código."
+      : "Contenido de ejemplo. Reemplázalo con tu propio trabajo en la lista TRABAJOS del código.";
+
+    app.innerHTML =
+      '<div class="wrap pad">' +
+        '<a class="back" href="#trabajos-' + cat.id + '"><span aria-hidden="true">←</span> ' + esc(cat.nombre) + "</a>" +
+        '<header class="detail-head"><p class="eyebrow">' + esc(t.unidad) + " · " + esc(t.modulo) + "</p>" +
+        "<h1>" + esc(t.titulo) + '</h1><p class="lead">' + esc(t.descripcion) + "</p></header>" +
+        '<div class="detail-grid">' +
+          '<article class="detail-main">' +
+            "<section><h2>Objetivo</h2><p>" + esc(t.objetivo) + "</p></section>" +
+            "<section><h2>Desarrollo</h2>" + t.desarrollo.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
+              "<ol>" + t.pasos.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ol></section>" +
+            t.bloques.map(bloqueHTML).join("") +
+            "<section><h2>Capturas de pantalla</h2>" +
+              '<div class="shots">' + t.capturas.map(capturaHTML).join("") + "</div></section>" +
+            '<section><h2>Conclusiones</h2><div class="concl">' + t.conclusiones.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</div></section>" +
+          "</article>" +
+          '<aside class="aside" aria-label="Ficha del trabajo">' +
+            '<div><div class="k">Apartado</div><div class="v">' + esc(cat.nombre) + "</div></div>" +
+            '<div><div class="k">Unidad</div><div class="v">' + esc(t.unidad) + "</div></div>" +
+            '<div><div class="k">Módulo</div><div class="v">' + esc(t.modulo) + "</div></div>" +
+            '<div><div class="k">Entrega</div><div class="v">' + esc(t.fecha) + "</div></div>" +
+            '<div><div class="k">Herramientas</div><div class="v">' + tagsHTML(t.herramientas) + "</div></div>" +
+            '<div><div class="k">Etiquetas</div><div class="v">' + tagsHTML(t.etiquetas) + "</div></div>" +
+            '<p class="ex">' + nota + "</p>" +
+          "</aside>" +
+        "</div>" +
+        '<nav class="pager" aria-label="Otros trabajos">' + pager + "</nav>" +
+      "</div>";
+  }
+
+  /* --- Navegación por hash --- */
+  function route(hash) {
+    var h = (hash || location.hash || "#inicio").slice(1);
+    var trabajo = TRABAJOS.filter(function (t) { return t.id === h; })[0];
+    var seccion = "inicio";
+
+    if (trabajo) { renderDetail(trabajo); seccion = "trabajos"; }
+    else if (h === "trabajos" || h === "trabajos-cisco" || h === "trabajos-clase") {
+      filtro = h === "trabajos-cisco" ? "cisco" : (h === "trabajos-clase" ? "clase" : "todos");
+      renderList();
+      seccion = "trabajos";
+    }
+    else { renderHome(); }
+
+    var links = document.querySelectorAll("[data-nav]");
+    for (var i = 0; i < links.length; i++) {
+      if (links[i].getAttribute("data-nav") === seccion) links[i].setAttribute("aria-current", "page");
+      else links[i].removeAttribute("aria-current");
+    }
+    window.scrollTo(0, 0);
+    try { app.focus({ preventScroll: true }); } catch (e) {}
+  }
+
+  /* La navegación no depende solo de hashchange: cada clic en un enlace
+     interno cambia la vista directamente, así funciona en cualquier visor. */
+  var actual = null;
+  function ir(hash) {
+    hash = hash || location.hash || "#inicio";
+    if (hash === actual) return;
+    actual = hash;
+    route(hash);
+  }
+  document.addEventListener("click", function (ev) {
+    var a = ev.target.closest ? ev.target.closest('a[href^="#"]') : null;
+    if (!a || ev.defaultPrevented || ev.button > 0 || ev.metaKey || ev.ctrlKey || ev.shiftKey) return;
+    ev.preventDefault();
+    var h = a.getAttribute("href");
+    try { if (location.hash !== h) location.hash = h; } catch (e) {}
+    ir(h);
+  });
+  window.addEventListener("hashchange", function () { ir(); });
+
+  var pie = document.getElementById("footer-nombre");
+  pie.textContent = PERFIL.nombre;
+  ir();
+})();
+</script>
+
+</body>
+</html>
