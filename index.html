@@ -227,6 +227,13 @@ main { display: block; outline: none; }
 .ph .pt { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--signal); }
 .ph .pn { font-size: 0.85rem; max-width: 30ch; }
 .shot figcaption { margin-top: 8px; font-size: 0.88rem; color: var(--ink-2); }
+.files { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.file { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 16px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-elev); color: var(--ink); text-decoration: none; }
+.file:hover { border-color: var(--accent); }
+.file .fx { font: 500 0.72rem var(--font-mono); text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent-ink); background: var(--accent); border-radius: 4px; padding: 3px 8px; }
+.file .fn { font-family: var(--font-mono); font-size: 0.88rem; overflow-wrap: anywhere; }
+.file .fa { color: var(--accent); font-weight: 600; font-size: 0.9rem; }
+.file-empty { padding: 16px; border: 1.5px dashed var(--ink-2); border-radius: 6px; color: var(--ink-2); font-size: 0.92rem; background: var(--bg-elev); }
 .concl { padding: 20px 22px; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; background: var(--bg-elev); }
 .pager { margin-top: 56px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
 .pager a { display: grid; gap: 4px; padding: 16px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg-elev); text-decoration: none; color: var(--ink); }
@@ -286,189 +293,121 @@ main { display: block; outline: none; }
      1. TUS DATOS: cambia estos textos por los tuyos.
      ============================================================ */
   var PERFIL = {
-    nombre: "[Raúl Contrera Verdin]",
-    carrera: "[Desarrollo de software Multiplataforma]",
-    semestre: "[4.º cuatrimestre]",
+    nombre: "Raúl Contreras Verdin",
+    carrera: "Desarrollo de Software Multiplataforma",
+    semestre: "[primer cuatrimestre]",
     materia: "Redes"
   };
 
   /* ============================================================
-     2. TUS TRABAJOS: cada objeto es una tarjeta y una página de detalle.
+     2. TUS TRABAJOS: cada trabajo(...) es una tarjeta y una página de detalle.
      - id: sin espacios ni acentos (se usa en la dirección #id).
      - categoria: "cisco" (Cisco Packet Tracer) o "clase" (Trabajos de clase).
-     - Las tarjetas con plantilla(...) son espacios vacíos: para usar uno,
-       cambia sus textos o reemplaza la línea por un objeto completo.
-       Para agregar otro espacio, copia una línea plantilla(...) y cambia su id.
-     - bloques: tipo "codigo" (texto) o "tabla" (cabeceras + filas).
-     - capturas: agrega src: "https://..." o una imagen data: para
-       mostrar tu captura real en lugar del marcador de posición.
+     - archivos: los archivos de la actividad. Sube cada archivo a la carpeta
+       "archivos" de tu repositorio y escribe aquí su ruta, por ejemplo:
+       archivos: ["archivos/01-modo-logico-fisico.pka", "archivos/01-modo-logico-fisico.pdf"]
+       (nombres en minúsculas, sin espacios ni acentos).
+     - Opcional: objetivo, desarrollo, conclusiones (texto) o capturas aparecen
+       en la página solo si los escribes. Si no, solo se ve la descripción y el archivo.
+     - Para agregar otro trabajo, copia uno completo y cambia su id.
      ============================================================ */
   var CATEGORIAS = [
-    { id: "cisco", nombre: "Cisco Packet Tracer", desc: "Prácticas y simulaciones de redes con Cisco Packet Tracer" },
-    { id: "clase", nombre: "Trabajos de clase", desc: "Tareas, reportes, investigaciones y ejercicios de la clase" }
+    { id: "cisco", nombre: "Cisco Packet Tracer", desc: "Actividades hechas en Cisco Packet Tracer" },
+    { id: "clase", nombre: "Trabajos de clase", desc: "Ejercicios y prácticas de la clase" }
   ];
 
-  /* Espacio vacío listo para llenar: solo cambia los textos. */
-  function plantilla(id, categoria, unidad) {
-    var esCisco = categoria === "cisco";
-    return {
-      id: id,
-      categoria: categoria,
-      plantilla: true,
-      unidad: unidad || "Unidad X",
-      modulo: "Tema del trabajo",
-      titulo: esCisco ? "Práctica de Cisco (por subir)" : "Trabajo de clase (por subir)",
-      descripcion: "Escribe aquí una descripción breve de lo que hiciste en este trabajo.",
-      etiquetas: ["Etiqueta 1", "Etiqueta 2"],
-      fecha: "[Fecha de entrega]",
-      herramientas: [esCisco ? "Cisco Packet Tracer" : "[Herramienta]"],
-      objetivo: "Escribe aquí el objetivo del trabajo.",
-      desarrollo: ["Explica aquí cómo realizaste el trabajo, paso a paso."],
-      pasos: ["<strong>Paso 1.</strong> Describe el primer paso.", "<strong>Paso 2.</strong> Describe el segundo paso."],
-      bloques: esCisco ? [{ tipo: "codigo", titulo: "Configuración o comandos", etiqueta: "Dispositivo · Cisco IOS", texto: "Router(config)# pega aquí tus comandos" }] : [],
-      capturas: [
-        { titulo: "Título de la captura 1", nota: "Aquí va tu captura de pantalla." },
-        { titulo: "Título de la captura 2", nota: "Aquí va tu captura de pantalla." }
-      ],
-      conclusiones: ["Escribe aquí tus conclusiones."]
+  function trabajo(datos) {
+    var base = {
+      categoria: "clase",
+      unidad: "Actividad",
+      modulo: "",
+      archivos: []
     };
+    for (var k in datos) base[k] = datos[k];
+    return base;
   }
 
   var TRABAJOS = [
-    {
-      id: "subneteo-ip",
+    trabajo({
+      id: "01-modo-logico-fisico",
+      archivos: ["archivos/01-modo-logico-fisico.pka", "archivos/01-modo-logico-fisico.pdf"],
+      categoria: "cisco",
+      unidad: "Actividad 1",
+      modulo: "Packet Tracer",
+      titulo: "Exploración del modo lógico y físico",
+      descripcion: "Con esta actividad conocí las herramientas de Packet Tracer, los dispositivos de red y las conexiones que se pueden observar en los modos lógico y físico.",
+      etiquetas: ["Packet Tracer", "Modo lógico", "Modo físico"]
+    }),
+    trabajo({
+      id: "02-conversiones-numericas",
+      archivos: ["archivos/02-conversiones-numericas.docx"],
       categoria: "clase",
-      unidad: "Unidad 2",
-      modulo: "Direccionamiento IPv4",
-      titulo: "Práctica de Subneteo IP",
-      descripcion: "División de la red 192.168.10.0/24 en cuatro subredes de al menos 50 hosts, con su tabla de direcciones y validación en Packet Tracer.",
-      etiquetas: ["Subneteo", "IPv4", "Direccionamiento"],
-      fecha: "15 sep 2026",
-      herramientas: ["Packet Tracer", "Calculadora IP"],
-      objetivo: "Dividir un bloque /24 en subredes del mismo tamaño y calcular para cada una la máscara, el rango de hosts utilizables y la dirección de broadcast, de modo que cada departamento tenga su propia red.",
-      desarrollo: [
-        "Se parte de la red 192.168.10.0/24 y se piden 4 subredes con al menos 50 hosts cada una. Para alojar 50 hosts hacen falta 6 bits de host (2⁶ − 2 = 62), así que se toman 2 bits prestados del último octeto y la máscara pasa de /24 a /26.",
-        "Con la máscara 255.255.255.192 el salto entre subredes es de 64 direcciones. Cada subred conserva 62 direcciones utilizables, una para la red y otra para el broadcast."
-      ],
-      pasos: [
-        "<strong>Requerimientos.</strong> 4 subredes, mínimo 50 hosts por subred.",
-        "<strong>Bits de host.</strong> 6 bits de host dan 62 direcciones utilizables.",
-        "<strong>Bits prestados.</strong> 26 − 24 = 2 bits, que dan 2² = 4 subredes.",
-        "<strong>Salto.</strong> 256 − 192 = 64, así que las redes empiezan en 0, 64, 128 y 192.",
-        "<strong>Verificación.</strong> Se configuran dos equipos por subred en Packet Tracer y se prueba conectividad con ping."
-      ],
-      bloques: [
-        { tipo: "codigo", titulo: "Cálculo", etiqueta: "Hoja de cálculo",
-          texto: "Hosts necesarios ......... 50  ->  2^6 - 2 = 62\nBits prestados ........... 26 - 24 = 2  ->  2^2 = 4 subredes\nMáscara .................. /26 = 255.255.255.192\nSalto .................... 256 - 192 = 64" },
-        { tipo: "tabla", titulo: "Tabla de subredes",
-          cabeceras: ["Subred", "Dirección de red", "Rango de hosts", "Broadcast"],
-          filas: [
-            ["Subred 1", "192.168.10.0/26", "192.168.10.1 – 192.168.10.62", "192.168.10.63"],
-            ["Subred 2", "192.168.10.64/26", "192.168.10.65 – 192.168.10.126", "192.168.10.127"],
-            ["Subred 3", "192.168.10.128/26", "192.168.10.129 – 192.168.10.190", "192.168.10.191"],
-            ["Subred 4", "192.168.10.192/26", "192.168.10.193 – 192.168.10.254", "192.168.10.255"]
-          ] }
-      ],
-      capturas: [
-        { titulo: "Topología con las cuatro subredes", nota: "Captura del área de trabajo de Packet Tracer con los equipos conectados." },
-        { titulo: "Prueba de conectividad con ping", nota: "Captura de la terminal de un PC con respuestas exitosas." }
-      ],
-      conclusiones: [
-        "El subneteo permite aprovechar un bloque de direcciones y separar departamentos sin pedir más espacio. Calcular primero los bits de host evitó desperdiciar direcciones.",
-        "El error más común fue olvidar restar las direcciones de red y de broadcast al contar hosts. Armar la tabla completa ayudó a detectarlo antes de configurar."
-      ]
-    },
-    {
-      id: "enrutamiento-estatico",
+      unidad: "Actividad 2",
+      modulo: "Sistemas numéricos",
+      titulo: "Conversiones decimal, binario y hexadecimal",
+      descripcion: "Conversiones entre los sistemas de numeración decimal, binario y hexadecimal.",
+      etiquetas: ["Decimal", "Binario", "Hexadecimal"]
+    }),
+    trabajo({
+      id: "03-direcciones-ipv6",
+      archivos: ["archivos/03-direcciones-ipv6.docx"],
+      categoria: "clase",
+      unidad: "Actividad 3",
+      modulo: "IPv6",
+      titulo: "Práctica de direcciones IPv6",
+      descripcion: "Práctica con direcciones IPv6 y su representación.",
+      etiquetas: ["IPv6", "Direccionamiento"]
+    }),
+    trabajo({
+      id: "04-modelos-tcpip-osi",
+      archivos: ["archivos/04-modelos-tcpip-osi.pka", "archivos/04-modelos-tcpip-osi.pdf"],
       categoria: "cisco",
-      unidad: "Unidad 3",
-      modulo: "Enrutamiento",
-      titulo: "Configuración de Enrutamiento Estático",
-      descripcion: "Conexión de dos redes LAN con dos routers Cisco mediante rutas estáticas, verificada con show ip route y pruebas de ping.",
-      etiquetas: ["Enrutamiento", "Cisco", "CLI"],
-      fecha: "6 oct 2026",
-      herramientas: ["Packet Tracer", "Cisco IOS"],
-      objetivo: "Lograr que PC1 (192.168.10.10) y PC2 (192.168.20.10) se comuniquen a través de dos routers, configurando manualmente una ruta estática en cada uno hacia la LAN remota.",
-      desarrollo: [
-        "Los routers R1 y R2 se unen con un enlace punto a punto 10.0.0.0/30. Cada router solo conoce sus redes conectadas, por lo que sin rutas estáticas el ping entre las LAN falla con 'Destination host unreachable'.",
-        "En R1 se agrega una ruta hacia 192.168.20.0/24 con siguiente salto 10.0.0.2, y en R2 la ruta inversa hacia 192.168.10.0/24 con siguiente salto 10.0.0.1."
-      ],
-      pasos: [
-        "<strong>Direccionamiento.</strong> Asignar IP a cada interfaz de los dos routers.",
-        "<strong>Activación.</strong> Ejecutar no shutdown en las interfaces utilizadas.",
-        "<strong>Rutas estáticas.</strong> Una por router hacia la LAN del otro extremo.",
-        "<strong>Revisión.</strong> Confirmar con show ip route que aparecen las rutas marcadas con S.",
-        "<strong>Prueba.</strong> Hacer ping de extremo a extremo."
-      ],
-      bloques: [
-        { tipo: "codigo", titulo: "Configuración de R1", etiqueta: "R1 · Cisco IOS",
-          texto: "R1(config)# interface g0/0\nR1(config-if)# ip address 192.168.10.1 255.255.255.0\nR1(config-if)# no shutdown\nR1(config-if)# exit\nR1(config)# interface g0/1\nR1(config-if)# ip address 10.0.0.1 255.255.255.252\nR1(config-if)# no shutdown\nR1(config-if)# exit\nR1(config)# ip route 192.168.20.0 255.255.255.0 10.0.0.2" },
-        { tipo: "codigo", titulo: "Configuración de R2", etiqueta: "R2 · Cisco IOS",
-          texto: "R2(config)# interface g0/0\nR2(config-if)# ip address 192.168.20.1 255.255.255.0\nR2(config-if)# no shutdown\nR2(config-if)# exit\nR2(config)# interface g0/1\nR2(config-if)# ip address 10.0.0.2 255.255.255.252\nR2(config-if)# no shutdown\nR2(config-if)# exit\nR2(config)# ip route 192.168.10.0 255.255.255.0 10.0.0.1" },
-        { tipo: "codigo", titulo: "Verificación", etiqueta: "R1 · Salida resumida",
-          texto: "R1# show ip route static\nS    192.168.20.0/24 [1/0] via 10.0.0.2\n\nR1# ping 192.168.20.10\n!!!!!\nSuccess rate is 100 percent (5/5)" }
-      ],
-      capturas: [
-        { titulo: "Topología de los dos routers", nota: "Captura con las interfaces y las redes rotuladas." },
-        { titulo: "Tabla de enrutamiento de R1", nota: "Captura de show ip route donde se ve la ruta S." },
-        { titulo: "Ping de PC1 a PC2", nota: "Captura de la terminal con respuestas exitosas." }
-      ],
-      conclusiones: [
-        "Las rutas estáticas son simples y predecibles, pero cada cambio de topología exige editar los routers a mano. Funcionan bien en redes pequeñas con pocos destinos.",
-        "Para que haya comunicación en ambos sentidos, la ruta de regreso es tan necesaria como la de ida. Ese fue el origen de mi primer ping fallido."
-      ]
-    },
-    {
-      id: "vlan-packet-tracer",
+      unidad: "Actividad 4",
+      modulo: "Modelos de red",
+      titulo: "Modelos TCP/IP y OSI en acción",
+      descripcion: "Actividad sobre los modelos TCP/IP y OSI aplicados en una red.",
+      etiquetas: ["TCP/IP", "OSI", "Modelos de red"]
+    }),
+    trabajo({
+      id: "05-exploracion-capa-fisica",
+      archivos: ["archivos/05-exploracion-capa-fisica.pka", "archivos/05-exploracion-capa-fisica.pdf"],
       categoria: "cisco",
-      unidad: "Unidad 4",
-      modulo: "Conmutación y VLAN",
-      titulo: "Simulación de Red en Packet Tracer",
-      descripcion: "Red departamental con dos VLAN, enlace troncal 802.1Q y router-on-a-stick, construida y probada en Packet Tracer.",
-      etiquetas: ["Packet Tracer", "VLAN", "Switching"],
-      fecha: "27 oct 2026",
-      herramientas: ["Cisco Packet Tracer"],
-      objetivo: "Simular una red con dos departamentos aislados en VLAN distintas (Ventas y Administración) que pueden comunicarse entre sí únicamente a través de un router.",
-      desarrollo: [
-        "El switch SW1 define la VLAN 10 (VENTAS) y la VLAN 20 (ADMIN). Los puertos Fa0/1 y Fa0/2 se configuran como acceso, cada uno en su VLAN, y el puerto Gi0/1 se configura como troncal hacia el router.",
-        "En el router se crean dos subinterfaces en Gi0/0, una por VLAN, con encapsulación 802.1Q. Cada subinterfaz es la puerta de enlace de su red."
-      ],
-      pasos: [
-        "<strong>VLAN.</strong> Crear la VLAN 10 y la VLAN 20 con nombre.",
-        "<strong>Puertos de acceso.</strong> Asignar Fa0/1 a la VLAN 10 y Fa0/2 a la VLAN 20.",
-        "<strong>Troncal.</strong> Configurar Gi0/1 en modo trunk hacia el router.",
-        "<strong>Subinterfaces.</strong> Crear Gi0/0.10 y Gi0/0.20 con encapsulation dot1Q.",
-        "<strong>Pruebas.</strong> Ping dentro de cada VLAN y entre VLAN."
-      ],
-      bloques: [
-        { tipo: "tabla", titulo: "Plan de VLAN",
-          cabeceras: ["VLAN", "Nombre", "Red", "Puerto", "Gateway"],
-          filas: [
-            ["10", "VENTAS", "192.168.10.0/24", "Fa0/1", "192.168.10.1"],
-            ["20", "ADMIN", "192.168.20.0/24", "Fa0/2", "192.168.20.1"]
-          ] },
-        { tipo: "codigo", titulo: "Configuración del switch", etiqueta: "SW1 · Cisco IOS",
-          texto: "SW1(config)# vlan 10\nSW1(config-vlan)# name VENTAS\nSW1(config-vlan)# vlan 20\nSW1(config-vlan)# name ADMIN\nSW1(config-vlan)# exit\nSW1(config)# interface f0/1\nSW1(config-if)# switchport mode access\nSW1(config-if)# switchport access vlan 10\nSW1(config-if)# interface f0/2\nSW1(config-if)# switchport mode access\nSW1(config-if)# switchport access vlan 20\nSW1(config-if)# interface g0/1\nSW1(config-if)# switchport mode trunk" },
-        { tipo: "codigo", titulo: "Subinterfaces del router", etiqueta: "R1 · Cisco IOS",
-          texto: "R1(config)# interface g0/0\nR1(config-if)# no shutdown\nR1(config-if)# interface g0/0.10\nR1(config-subif)# encapsulation dot1Q 10\nR1(config-subif)# ip address 192.168.10.1 255.255.255.0\nR1(config-subif)# interface g0/0.20\nR1(config-subif)# encapsulation dot1Q 20\nR1(config-subif)# ip address 192.168.20.1 255.255.255.0" }
-      ],
-      capturas: [
-        { titulo: "Topología completa en Packet Tracer", nota: "Captura con el switch, el router y los PC de cada VLAN." },
-        { titulo: "Salida de show vlan brief", nota: "Captura donde se ven las VLAN 10 y 20 con sus puertos." }
-      ],
-      conclusiones: [
-        "Las VLAN separan el tráfico de cada departamento aunque compartan el mismo switch físico. El router-on-a-stick permite el paso entre VLAN con un solo cable.",
-        "Olvidar configurar el puerto como troncal dejó incomunicadas a las dos VLAN. Revisar con show interfaces trunk fue la forma más rápida de encontrarlo."
-      ]
-    },
-
-    /* ---- Espacios vacíos: Cisco Packet Tracer ---- */
-    plantilla("cisco-nuevo-1", "cisco", "Unidad 5"),
-    plantilla("cisco-nuevo-2", "cisco", "Unidad 5"),
-
-    /* ---- Espacios vacíos: Trabajos de clase ---- */
-    plantilla("clase-nuevo-1", "clase", "Unidad 3"),
-    plantilla("clase-nuevo-2", "clase", "Unidad 4")
+      unidad: "Actividad 5",
+      modulo: "Capa física",
+      titulo: "Exploración de la capa física",
+      descripcion: "Exploración de la capa física de una red.",
+      etiquetas: ["Capa física", "Packet Tracer"]
+    }),
+    trabajo({
+      id: "06-conectar-capa-fisica",
+      archivos: ["archivos/06-conectar-capa-fisica.pka", "archivos/06-conectar-capa-fisica.pdf"],
+      categoria: "cisco",
+      unidad: "Actividad 6",
+      modulo: "Capa física",
+      titulo: "Conectar la capa física",
+      descripcion: "Conexión de dispositivos en la capa física de una red.",
+      etiquetas: ["Capa física", "Cableado", "Packet Tracer"]
+    }),
+    trabajo({
+      id: "07-ipv4-classful",
+      archivos: ["archivos/07-ipv4-classful.pdf"],
+      categoria: "clase",
+      unidad: "Actividad 7",
+      modulo: "IPv4",
+      titulo: "Direccionamiento IPv4 con clase (classful)",
+      descripcion: "Direccionamiento IPv4 con clase y sus clases de direcciones.",
+      etiquetas: ["IPv4", "Classful", "Direccionamiento"]
+    }),
+    trabajo({
+      id: "08-porcion-red-host",
+      archivos: ["archivos/08-porcion-red-host.pdf"],
+      categoria: "clase",
+      unidad: "Actividad 8",
+      modulo: "IPv4",
+      titulo: "Porción de red y host",
+      descripcion: "Identificación de la porción de red y la porción de host en una dirección IP.",
+      etiquetas: ["IPv4", "Red", "Host"]
+    })
   ];
 
   /* ============================================================
@@ -516,7 +455,7 @@ main { display: block; outline: none; }
           '<div class="ficha"><div class="ficha-head">Ficha del estudiante</div><dl>' +
             '<dt>Nombre</dt><dd data-perfil="nombre"></dd>' +
             '<dt>Carrera</dt><dd data-perfil="carrera"></dd>' +
-            '<dt>Semestre</dt><dd data-perfil="semestre"></dd>' +
+            '<dt>Cuatrimestre</dt><dd data-perfil="semestre"></dd>' +
             '<dt>Materia</dt><dd data-perfil="materia"></dd>' +
           "</dl></div>" +
           '<div class="cta"><a class="btn" href="#trabajos">Ver evidencias <span aria-hidden="true">→</span></a></div>' +
@@ -524,7 +463,7 @@ main { display: block; outline: none; }
         "<div>" + topologiaSVG() + "</div>" +
       "</div></div>" +
       '<div class="wrap"><section class="section split" style="padding-bottom:72px">' +
-        '<div><p class="eyebrow">Propósito</p><h2>Un registro del avance semestre a semestre</h2></div>' +
+        '<div><p class="eyebrow">Propósito</p><h2>Un registro del avance cuatrimestre a cuatrimestre</h2></div>' +
         "<div>" +
           '<div class="prose"><p>Este blog funciona como <strong>archivo de la materia</strong>: cada trabajo queda documentado con lo necesario para revisarlo después, ya sea para estudiar, para una evaluación o para retomar una configuración.</p>' +
           "<p>Los trabajos se dividen en dos apartados. Elige uno para ver sus evidencias, con objetivo, desarrollo, comandos y conclusiones.</p></div>" +
@@ -573,7 +512,7 @@ main { display: block; outline: none; }
     app.innerHTML =
       '<div class="wrap pad">' +
         '<div class="page-head"><p class="eyebrow">Evidencias</p><h1>Trabajos de la materia</h1>' +
-        "<p>Dos apartados: las prácticas de Cisco Packet Tracer y los trabajos de clase. Las tarjetas con borde punteado son espacios libres para tu próximo trabajo.</p></div>" +
+        "<p>Dos apartados: las prácticas de Cisco Packet Tracer y los trabajos de clase.</p></div>" +
         '<nav class="filters" aria-label="Apartados de trabajos">' + tabsHTML + "</nav>" +
         secciones +
       "</div>";
@@ -604,6 +543,20 @@ main { display: block; outline: none; }
 
   var ICONO_IMG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none"/><circle cx="8.5" cy="9.5" r="1.5" fill="none"/><path d="M21 16l-5-5-8 9" fill="none"/></svg>';
 
+  function archivosHTML(t) {
+    if (!t.archivos || !t.archivos.length) {
+      return '<p class="file-empty">Archivo pendiente de subir.</p>';
+    }
+    return '<ul class="files">' + t.archivos.map(function (ruta) {
+      var nombre = ruta.split("/").pop();
+      var ext = (nombre.indexOf(".") > -1 ? nombre.split(".").pop() : "archivo").slice(0, 5).toUpperCase();
+      var pdf = /\.pdf$/i.test(ruta);
+      return '<li><a class="file" href="' + esc(encodeURI(ruta)) + '"' + (pdf ? ' target="_blank" rel="noopener"' : " download") + ">" +
+        '<span class="fx">' + esc(ext) + '</span><span class="fn">' + esc(nombre) + '</span>' +
+        '<span class="fa">' + (pdf ? "Abrir" : "Descargar") + "</span></a></li>";
+    }).join("") + "</ul>";
+  }
+
   function capturaHTML(c, i) {
     var fig = c.src
       ? '<img src="' + esc(c.src) + '" alt="' + esc(c.titulo) + '">'
@@ -620,9 +573,6 @@ main { display: block; outline: none; }
     var pager =
       (prev ? '<a href="#' + prev.id + '"><span class="k">← Anterior</span><span>' + esc(prev.titulo) + "</span></a>" : '<span class="gap"></span>') +
       (next ? '<a class="next" href="#' + next.id + '"><span class="k">Siguiente →</span><span>' + esc(next.titulo) + "</span></a>" : "");
-    var nota = t.plantilla
-      ? "Espacio libre. Edita estos textos en la lista TRABAJOS del código."
-      : "Contenido de ejemplo. Reemplázalo con tu propio trabajo en la lista TRABAJOS del código.";
 
     app.innerHTML =
       '<div class="wrap pad">' +
@@ -631,22 +581,21 @@ main { display: block; outline: none; }
         "<h1>" + esc(t.titulo) + '</h1><p class="lead">' + esc(t.descripcion) + "</p></header>" +
         '<div class="detail-grid">' +
           '<article class="detail-main">' +
-            "<section><h2>Objetivo</h2><p>" + esc(t.objetivo) + "</p></section>" +
-            "<section><h2>Desarrollo</h2>" + t.desarrollo.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
-              "<ol>" + t.pasos.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ol></section>" +
-            t.bloques.map(bloqueHTML).join("") +
-            "<section><h2>Capturas de pantalla</h2>" +
-              '<div class="shots">' + t.capturas.map(capturaHTML).join("") + "</div></section>" +
-            '<section><h2>Conclusiones</h2><div class="concl">' + t.conclusiones.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</div></section>" +
+            (t.objetivo ? "<section><h2>Objetivo</h2><p>" + esc(t.objetivo) + "</p></section>" : "") +
+            ((t.desarrollo && t.desarrollo.length) || (t.pasos && t.pasos.length)
+              ? "<section><h2>Desarrollo</h2>" + (t.desarrollo || []).map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") +
+                ((t.pasos && t.pasos.length) ? "<ol>" + t.pasos.map(function (p) { return "<li>" + p + "</li>"; }).join("") + "</ol>" : "") + "</section>"
+              : "") +
+            (t.bloques || []).map(bloqueHTML).join("") +
+            ((t.capturas && t.capturas.length) ? "<section><h2>Capturas de pantalla</h2><div class=\"shots\">" + t.capturas.map(capturaHTML).join("") + "</div></section>" : "") +
+            "<section><h2>Archivos de la actividad</h2>" + archivosHTML(t) + "</section>" +
+            ((t.conclusiones && t.conclusiones.length) ? '<section><h2>Conclusiones</h2><div class="concl">' + t.conclusiones.map(function (p) { return "<p>" + esc(p) + "</p>"; }).join("") + "</div></section>" : "") +
           "</article>" +
           '<aside class="aside" aria-label="Ficha del trabajo">' +
             '<div><div class="k">Apartado</div><div class="v">' + esc(cat.nombre) + "</div></div>" +
-            '<div><div class="k">Unidad</div><div class="v">' + esc(t.unidad) + "</div></div>" +
-            '<div><div class="k">Módulo</div><div class="v">' + esc(t.modulo) + "</div></div>" +
-            '<div><div class="k">Entrega</div><div class="v">' + esc(t.fecha) + "</div></div>" +
-            '<div><div class="k">Herramientas</div><div class="v">' + tagsHTML(t.herramientas) + "</div></div>" +
+            '<div><div class="k">Actividad</div><div class="v">' + esc(t.unidad) + "</div></div>" +
+            (t.modulo ? '<div><div class="k">Tema</div><div class="v">' + esc(t.modulo) + "</div></div>" : "") +
             '<div><div class="k">Etiquetas</div><div class="v">' + tagsHTML(t.etiquetas) + "</div></div>" +
-            '<p class="ex">' + nota + "</p>" +
           "</aside>" +
         "</div>" +
         '<nav class="pager" aria-label="Otros trabajos">' + pager + "</nav>" +
